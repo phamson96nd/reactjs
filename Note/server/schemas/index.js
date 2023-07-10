@@ -1,6 +1,6 @@
 export const typeDefs = `#graphql
   type Folder {
-    id: String,
+    id: String!,
     name: String,
     createdAd: String,
     author: Author,
@@ -8,12 +8,13 @@ export const typeDefs = `#graphql
   }
   
   type Author {
-    id: String,
+    id: String!,
+    uid: String,
     name: String,
   }
   
   type Note {
-    id: String,
+    id: String!,
     content: String,
   }
   
@@ -25,6 +26,8 @@ export const typeDefs = `#graphql
   }
   
   type Mutation {
+    addNote(content: String, folderId: ID!): Note
     addFolder(name: String!): Folder
+    register(uid: String!, name: String!): Author
   }
 `

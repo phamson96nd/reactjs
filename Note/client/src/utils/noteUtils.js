@@ -1,3 +1,5 @@
+import {graphQLRequest} from "./request";
+
 export const notesLoader = async ({params}) => {
   const query = `query Folder($folderId: String!) {
                     folder(folderId: $folderId) {
@@ -10,46 +12,50 @@ export const notesLoader = async ({params}) => {
                     }
                     }`
 
-  const res = await fetch('http://localhost:4000/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        folderId: params.folderId
-      }
-    })
+  const data = await graphQLRequest({
+    query,
+    variables: {
+      folderId: params.folderId
+    }
   })
-
-  const {data} = await res.json()
   return data
 }
 
 export const noteLoader = async ({params}) => {
-  const query = `query Folder($noteId: String) {
+  const query = `query Note($noteId: String) {
                   note(noteId: $noteId) {
                     id
                     content
                   }
                 }`
 
-  const res = await fetch('http://localhost:4000/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        noteId: params.noteId
-      }
-    })
+  const data = await graphQLRequest({
+    query,
+    variables: {
+      noteId: params.noteId
+    }
+  })
+  return data
+}
+
+export const addNewNote = async ({params, request}) => {
+  const newNote = await request.formData()
+  const formDataObj = {}
+  newNote.forEach((value, key) => {
+    formDataObj[key] = value
+  })
+  const query = `mutation Mutation($content: String, $folderId: ID!) {
+                  addNote(content: $content, folderId: $folderId) {
+                    id,
+                    content
+                  }  
+                }
+  `
+  const {data} = await graphQLRequest({
+    query,
+    variables: formDataObj
   })
 
-  const {data} = await res.json()
-  return data
+  console.log(data, '1')
+  return data;
 }

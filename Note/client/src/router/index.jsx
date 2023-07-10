@@ -6,7 +6,7 @@ import AuthProvider from "../context/AuthProvider"
 import ErrorPage from "../pages/ErrorPage"
 import NoteList from "../components/NoteList"
 import Note from '../components/Note'
-import {notesLoader, noteLoader} from '../utils/noteUtils'
+import {notesLoader, noteLoader, addNewNote} from '../utils/noteUtils'
 import {folderLoader} from "../utils/folderUtils"
 
 
@@ -39,6 +39,7 @@ export default createBrowserRouter([
               {
                 element: <NoteList />,
                 path: `folders/:folderId`,
+                action: addNewNote,
                 loader: notesLoader,
                 children: [
                   {
