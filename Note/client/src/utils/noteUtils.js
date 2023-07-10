@@ -8,6 +8,7 @@ export const notesLoader = async ({params}) => {
                       notes {
                         content
                         id
+                        updatedAt
                       }
                     }
                     }`
@@ -56,6 +57,27 @@ export const addNewNote = async ({params, request}) => {
     variables: formDataObj
   })
 
-  console.log(data, '1')
+  return data;
+}
+
+export const updateNote = async ({params, request}) => {
+  const updatedNote = await request.formData()
+  const formDataObj = {}
+  updatedNote.forEach((value, key) => {
+    formDataObj[key] = value
+  })
+  const query = `mutation Mutation($id: String!, $content: String!) {
+                  updateNote(id: $id, content: $content) {
+                    id,
+                    content
+                  }  
+                }
+  `
+  const {data} = await graphQLRequest({
+    query,
+    variables: formDataObj
+  })
+  console.log('jkkkkkkkkkkkkkkkkkk', data)
+
   return data;
 }

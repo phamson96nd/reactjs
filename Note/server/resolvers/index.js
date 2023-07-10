@@ -1,6 +1,17 @@
+import { GraphQLScalarType } from 'graphql';
 import {FolderModel, AuthorModel, NoteModel} from '../models/index.js'
 
 export const resolvers = {
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    parseValue(value) {
+      return new Date(value)
+    },
+    serialize(value) {
+      return value.toISOString()
+    }
+  }),
+
   Query: {
     folders: async (parent, args, context) => {
       const folders = await FolderModel.find({
@@ -33,6 +44,8 @@ export const resolvers = {
     notes: async (parent, args) => {
       const notes = await NoteModel.find({
         folderId: parent.id
+      }).sort({
+        updatedAt: 'desc'
       })
       return notes
     }
@@ -42,6 +55,11 @@ export const resolvers = {
       const newNote = new NoteModel(args)
       await newNote.save()
       return newNote
+    },
+    updateNote: async (parent, args) => {
+      const nodeId = args.id
+      const note = await NoteModel.findByIdAndUpdate(nodeId, args)
+      return note
     },
     addFolder: async (parent, args, context) => {
       const newFolder = new FolderModel({...args, authorId: context.uid})
