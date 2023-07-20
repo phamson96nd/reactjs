@@ -17,7 +17,7 @@ class AuthController extends Controller
         if (!Auth::attempt($credentials)) {
             return response([
                'message' => 'Fail!'
-            ]);
+            ], 422);
         }
         /* @var User $user */
         $user = Auth::user();
